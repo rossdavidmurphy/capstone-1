@@ -1,9 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ public class FinancialApp {
         boolean running = true;
 
         while (running) {
-            // Make .csv an array
             displayMainMenu();
             int selectMenuOption = input.nextInt();
             input.nextLine();
@@ -34,7 +30,7 @@ public class FinancialApp {
                     makeAPayment();
                     break;
                 case 3:
-                    viewLedger();
+                    viewLedgerMenu();
                     break;
                 case 4:
                     System.out.println("Goodbye!");
@@ -72,18 +68,18 @@ public class FinancialApp {
 
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("data/transactions.csv", true));
-//            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss");
             String ledgerEntryAsString = String.format("%tF | %tT | %s | %s | %.2f", date, time, description, vendor, amount);
 
             LedgerEntry ledgerEntry = new LedgerEntry(date, time, description, vendor, amount);
+            ledgerEntries.add(ledgerEntry);
             bufferedWriter.write(ledgerEntryAsString);
             bufferedWriter.newLine();
             bufferedWriter.close();
+            promptReturnToMainMenu();
         } catch (IOException e) {
             System.out.println("Error writing to transactions.csv file");
             throw new RuntimeException(e);
         }
-        promptReturnToMenu();
     }
 
     public static void makeAPayment() {
@@ -116,52 +112,164 @@ public class FinancialApp {
 
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("data/transactions.csv", true));
-//            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss");
             String ledgerEntryAsString = String.format("%tF | %tT | %s | %s | %.2f", date, time, description, vendor, amount);
 
             LedgerEntry ledgerEntry = new LedgerEntry(date, time, description, vendor, amount);
+            ledgerEntries.add(ledgerEntry);
             bufferedWriter.write(ledgerEntryAsString);
             bufferedWriter.newLine();
             bufferedWriter.close();
+            promptReturnToMainMenu();
         } catch (IOException e) {
             System.out.println("Error writing to transactions.csv file");
             throw new RuntimeException(e);
         }
-        promptReturnToMenu();
     }
 
-    public static void viewLedger() {
-        System.out.println("=== Ledger Screen ===");
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        promptReturnToMenu();
+    public static void viewLedgerMenu() {
+
+        boolean displayLedgerMenu = true;
+
+        while (displayLedgerMenu) {
+            System.out.println("=== Ledger Menu ===");
+            System.out.println("Press 1 to Display All Entries");
+            System.out.println("Press 2 to Display Deposits");
+            System.out.println("Press 3 to Display Payments");
+            System.out.println("Press 4 to Display Reports");
+
+            int selectMenuOption = input.nextInt();
+            input.nextLine();
+
+            switch (selectMenuOption) {
+                case 1:
+                    displayAllEntries();
+                    break;
+                case 2:
+                    displayDeposits();
+                    break;
+                case 3:
+                    displayPayments();
+                    break;
+                case 4:
+                    reportOptionsMenu();
+                    break;
+                case 5:
+                    displayLedgerMenu = false;
+                    break;
+                default:
+                    System.out.println("Invalid menu option. Please try again.");
+            }
+        }
+    }
+    public static void displayAllEntries() {
+        System.out.println("=== All Entries ===");
+
+        for (LedgerEntry entry : ledgerEntries) {
+            System.out.println(entry.display());
+        }
+    }
+    public static void displayDeposits() {
+        System.out.println("=== Deposit Entries ===");
+        for (LedgerEntry entry : ledgerEntries) {
+            if (entry.getAmount() > 0) {
+                System.out.println(entry.display());
+            }
+        }
+    }
+    public static void displayPayments() {
+        System.out.println("=== Payment Entries ===");
+        for (LedgerEntry entry : ledgerEntries) {
+            if (entry.getAmount() <= 0) {
+                System.out.println(entry.display());
+            }
+        }
+    }
+    private static void reportOptionsMenu() {
+        boolean displayReportMenu = true;
+
+        while (displayReportMenu) {
+            System.out.println("=== Reports Menu ===");
+            System.out.println("Press 1 to Display Month to Date");
+            System.out.println("Press 2 to Display Previous Month");
+            System.out.println("Press 3 to Display Year to Date");
+            System.out.println("Press 4 to Search by Vendor");
+
+            int selectMenuOption = input.nextInt();
+            input.nextLine();
+
+//            switch (selectMenuOption) {
+//                case 1:
+//                    displayMonthToDate();
+//                    break;
+//                case 2:
+//                    displayPreviousMonth();
+//                    break;;
+//                case 3:
+//                    displayYearToDate();
+//                    break;
+//                case 4:
+//                    searchByVendor();
+//                    break;
+//                case 5:
+//                    displayReportMenu = false;
+//                default:
+//                    System.out.println("Invalid menu option. Please try again.");
+//            }
+        }
     }
 
-    private static void promptReturnToMenu() {
+    public static void displayLedgerMenu() {
+        System.out.println("=== Ledger Menu ===");
+        System.out.println("Press 1 to Display All Entries");
+        System.out.println("Press 2 to Display Deposits");
+        System.out.println("Press 3 to Display Payments");
+        System.out.println("Press 4 to Display Reports");
+        promptReturnToMainMenu();
+    }
+
+    private static void displayReportsMenu() {
+        System.out.println("=== Reports Menu ===");
+        System.out.println("Press 1 to Display Month to Date");
+        System.out.println("Press 2 to Display Previous Month");
+        System.out.println("Press 3 to Display Year to Date");
+        System.out.println("Press 4 to Search by Vendor");
+
+        promptReturnToReportMenu();
+    }
+
+    private static void promptReturnToMainMenu() {
         System.out.println("\nPress Enter to Return to the Main Menu.");
+        input.nextLine();
+    }
+    private static void promptReturnToReportMenu() {
+        System.out.println("\nPress Enter to Return to the Report Menu.");
         input.nextLine();
     }
     public static void loadTransactions() {
         ledgerEntries.clear();
 
         try (Scanner input = new Scanner(new File("data/transactions.csv"))) {
+            if (input.hasNextLine()) {
+                input.nextLine();
+            }
             while (input.hasNextLine()) {
                 String line = input.nextLine();
-                String[] tokens = line.split("\\s* | \\s*");
+                String[] tokens = line.split("\\| ");
 
                 if (tokens.length != 5) continue;
 //                System.out.println("Entry omitted due to incomplete field entry.");
 
-                LocalDate date = LocalDate.parse(tokens[0]);
-                LocalTime time = LocalTime.parse(tokens[1]);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
+                LocalDate date = LocalDate.parse(tokens[0].trim());
+                LocalTime time = LocalTime.parse(tokens[1].trim());
+                String description = tokens[2].trim();
+                String vendor = tokens[3].trim();
+                double amount = Double.parseDouble(tokens[4].trim());
 
                 LedgerEntry entry = new LedgerEntry(date, time, description, vendor, amount);
                 ledgerEntries.add(entry);
             }
+
+            System.out.println("Loaded " + ledgerEntries.size() + " transactions.");
         } catch (Exception e) {
             System.out.println("Could not load transactions.");
             throw new RuntimeException(e);

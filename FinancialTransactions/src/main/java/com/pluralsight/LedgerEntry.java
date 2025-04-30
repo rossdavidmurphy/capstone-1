@@ -60,7 +60,4 @@ public class LedgerEntry {
         builder.append(date).append("\t").append(time).append("\t").append(description).append("\t").append(vendor).append("\t").append(amount);
         return builder.toString();
     }
-    public String toString() {
-        return String.format("%tF | %tT | %s | %s | %.2f", date, time, description, vendor, amount);
-    }
 }
