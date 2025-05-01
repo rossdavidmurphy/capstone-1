@@ -56,8 +56,9 @@ public class LedgerEntry {
         this.amount = amount;
     }
     public String display() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(date).append("\t").append(time).append("\t").append(description).append("\t").append(vendor).append("\t").append(amount);
-        return builder.toString();
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(date).append("\t").append(time).append("\t").append(description).append("\t").append(vendor).append("\t").append(amount);
+//        return builder.toString();
+        return String.format("%tF | %tT | %s | %s | %.2f", date, time, description, vendor, amount);
     }
 }

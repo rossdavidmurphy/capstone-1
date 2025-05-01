@@ -1,8 +1,11 @@
 package com.pluralsight;
 
+import com.sun.source.tree.IfTree;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -43,15 +46,14 @@ public class FinancialApp {
     }
 
     public static void displayMainMenu() {
-        System.out.println("=== Main Menu ===");
+        System.out.println("\n=== Main Menu ===");
         System.out.println("Press 1 to Make a Deposit");
         System.out.println("Press 2 to Make a Payment");
         System.out.println("Press 3 to View Ledger");
         System.out.println("Press 4 to Exit");
     }
-
     public static void makeADeposit() {
-        System.out.println("=== Deposit Screen ===");
+        System.out.println("\n=== Deposit Screen ===");
 
         System.out.println("Enter product description: ");
         String description = input.nextLine();
@@ -81,9 +83,8 @@ public class FinancialApp {
             throw new RuntimeException(e);
         }
     }
-
     public static void makeAPayment() {
-        System.out.println("=== Payment Screen ===");
+        System.out.println("\n=== Payment Screen ===");
 
         System.out.println("Enter product description: ");
         String description = input.nextLine();
@@ -131,29 +132,29 @@ public class FinancialApp {
         boolean displayLedgerMenu = true;
 
         while (displayLedgerMenu) {
-            System.out.println("=== Ledger Menu ===");
+            System.out.println("\n=== Ledger Menu ===");
             System.out.println("Press 1 to Display All Entries");
             System.out.println("Press 2 to Display Deposits");
             System.out.println("Press 3 to Display Payments");
             System.out.println("Press 4 to Display Reports");
+            System.out.println("\nPress Enter to Return to Main Menu");
 
-            int selectMenuOption = input.nextInt();
-            input.nextLine();
+            String selectMenuOption = input.nextLine();
 
             switch (selectMenuOption) {
-                case 1:
+                case "1":
                     displayAllEntries();
                     break;
-                case 2:
+                case "2":
                     displayDeposits();
                     break;
-                case 3:
+                case "3":
                     displayPayments();
                     break;
-                case 4:
-                    reportOptionsMenu();
+                case "4":
+                    viewReportMenu();
                     break;
-                case 5:
+                case "":
                     displayLedgerMenu = false;
                     break;
                 default:
@@ -162,14 +163,14 @@ public class FinancialApp {
         }
     }
     public static void displayAllEntries() {
-        System.out.println("=== All Entries ===");
+        System.out.println("\n=== All Entries ===");
 
         for (LedgerEntry entry : ledgerEntries) {
             System.out.println(entry.display());
         }
     }
     public static void displayDeposits() {
-        System.out.println("=== Deposit Entries ===");
+        System.out.println("\n=== Deposit Entries ===");
         for (LedgerEntry entry : ledgerEntries) {
             if (entry.getAmount() > 0) {
                 System.out.println(entry.display());
@@ -177,74 +178,113 @@ public class FinancialApp {
         }
     }
     public static void displayPayments() {
-        System.out.println("=== Payment Entries ===");
+        System.out.println("\n=== Payment Entries ===");
         for (LedgerEntry entry : ledgerEntries) {
             if (entry.getAmount() <= 0) {
                 System.out.println(entry.display());
             }
         }
     }
-    private static void reportOptionsMenu() {
+
+    private static void viewReportMenu() {
+
         boolean displayReportMenu = true;
 
         while (displayReportMenu) {
-            System.out.println("=== Reports Menu ===");
+            System.out.println("\n=== Reports Menu ===");
             System.out.println("Press 1 to Display Month to Date");
             System.out.println("Press 2 to Display Previous Month");
             System.out.println("Press 3 to Display Year to Date");
             System.out.println("Press 4 to Search by Vendor");
+            System.out.println("\nPress Enter to Return to Main Menu");
 
-            int selectMenuOption = input.nextInt();
-            input.nextLine();
+            String selectMenuOption = input.nextLine();
 
-//            switch (selectMenuOption) {
-//                case 1:
-//                    displayMonthToDate();
-//                    break;
-//                case 2:
-//                    displayPreviousMonth();
-//                    break;;
-//                case 3:
-//                    displayYearToDate();
-//                    break;
-//                case 4:
-//                    searchByVendor();
-//                    break;
-//                case 5:
-//                    displayReportMenu = false;
-//                default:
-//                    System.out.println("Invalid menu option. Please try again.");
-//            }
+            switch (selectMenuOption) {
+                case "1":
+                    displayMonthToDate();
+                    break;
+                case "2":
+                    displayPreviousMonth();
+                    break;
+                case "3":
+                    displayYearToDate();
+                    break;
+                case "4":
+                    searchByVendor();
+                    break;
+                case "":
+                    displayReportMenu = false;
+                    break;
+                default:
+                    System.out.println("Invalid menu option. Please try again.");
+            }
         }
     }
+    public static void displayMonthToDate() {
+        System.out.println("\n=== Month to Date ===");
 
-    public static void displayLedgerMenu() {
-        System.out.println("=== Ledger Menu ===");
-        System.out.println("Press 1 to Display All Entries");
-        System.out.println("Press 2 to Display Deposits");
-        System.out.println("Press 3 to Display Payments");
-        System.out.println("Press 4 to Display Reports");
-        promptReturnToMainMenu();
+        LocalDate firstOfTheMonth = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        LocalDate currentDate =  LocalDate.now().plusDays(1);
+
+        for (LedgerEntry entry : ledgerEntries) {
+            boolean withinTimeframe = entry.date.isAfter(firstOfTheMonth) &&  entry.date.isBefore(currentDate);
+            if (withinTimeframe) {
+                System.out.println(entry.display());
+            }
+        }
     }
+    public static void displayPreviousMonth() {
+        System.out.println("\n=== Previous Month ===");
+        YearMonth previousMonth = YearMonth.now().minusMonths(1);
 
-    private static void displayReportsMenu() {
-        System.out.println("=== Reports Menu ===");
-        System.out.println("Press 1 to Display Month to Date");
-        System.out.println("Press 2 to Display Previous Month");
-        System.out.println("Press 3 to Display Year to Date");
-        System.out.println("Press 4 to Search by Vendor");
+        for (LedgerEntry entry : ledgerEntries) {
+            LocalDate entryDate = entry.date;
 
-        promptReturnToReportMenu();
+            YearMonth entryMonth = YearMonth.from(entryDate);
+
+            if (entryMonth.equals(previousMonth)) {
+                System.out.println(entry.display());
+            }
+        }
+    }
+    public static void displayYearToDate() {
+        System.out.println("\n=== Year to Date ===");
+
+        LocalDate firstOfTheYear = LocalDate.now().withDayOfYear(1).minusYears(1);
+        LocalDate currentDate = LocalDate.now();
+
+        for (LedgerEntry entry : ledgerEntries) {
+            boolean withinTimeframe = entry.date.isAfter(firstOfTheYear) && entry.date.isBefore(currentDate);
+            if (withinTimeframe) {
+                System.out.println(entry.display());
+            }
+        }
+    }
+    public static void searchByVendor() {
+        System.out.println("Please Enter the Vendor Name");
+
+        String searchEntry = input.nextLine();
+
+        boolean found = false;
+
+        for (LedgerEntry entry : ledgerEntries) {
+            if (entry.getVendor().equalsIgnoreCase(searchEntry)) {
+                System.out.println(entry.display());
+                found = true;
+            }
+        }
+        if (!found){
+            System.out.println("No transaction found for: " + searchEntry);
+        }
+
     }
 
     private static void promptReturnToMainMenu() {
         System.out.println("\nPress Enter to Return to the Main Menu.");
         input.nextLine();
     }
-    private static void promptReturnToReportMenu() {
-        System.out.println("\nPress Enter to Return to the Report Menu.");
-        input.nextLine();
-    }
+
     public static void loadTransactions() {
         ledgerEntries.clear();
 
@@ -257,7 +297,6 @@ public class FinancialApp {
                 String[] tokens = line.split("\\| ");
 
                 if (tokens.length != 5) continue;
-//                System.out.println("Entry omitted due to incomplete field entry.");
 
                 LocalDate date = LocalDate.parse(tokens[0].trim());
                 LocalTime time = LocalTime.parse(tokens[1].trim());
