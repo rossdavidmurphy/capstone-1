@@ -33,7 +33,7 @@ A **Java-based Command-Line Interface (CLI)** application designed to help users
 
 ### 🔹 Main Menu
 
-<img width="1255" alt="Image" src="https://github.com/user-attachments/assets/b348d79f-d115-4ad5-880b-71245e182168" />
+<img width="213" alt="Image" src="https://github.com/user-attachments/assets/9b4dfbb3-2d0f-4385-b8cb-fc071f90f312" />
 
 ### 🔹 Ledger Menu
 
