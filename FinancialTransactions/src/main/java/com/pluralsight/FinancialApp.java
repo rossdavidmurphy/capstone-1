@@ -1,7 +1,5 @@
 package com.pluralsight;
 
-import com.sun.source.tree.IfTree;
-
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -74,10 +72,11 @@ public class FinancialApp {
 
             LedgerEntry ledgerEntry = new LedgerEntry(date, time, description, vendor, amount);
             ledgerEntries.add(ledgerEntry);
+
             bufferedWriter.write(ledgerEntryAsString);
             bufferedWriter.newLine();
             bufferedWriter.close();
-            promptReturnToMainMenu();
+            promptReturnToPreviousMenu();
         } catch (IOException e) {
             System.out.println("Error writing to transactions.csv file");
             throw new RuntimeException(e);
@@ -117,15 +116,17 @@ public class FinancialApp {
 
             LedgerEntry ledgerEntry = new LedgerEntry(date, time, description, vendor, amount);
             ledgerEntries.add(ledgerEntry);
+
             bufferedWriter.write(ledgerEntryAsString);
             bufferedWriter.newLine();
             bufferedWriter.close();
-            promptReturnToMainMenu();
+            promptReturnToPreviousMenu();
         } catch (IOException e) {
             System.out.println("Error writing to transactions.csv file");
             throw new RuntimeException(e);
         }
     }
+
 
     public static void viewLedgerMenu() {
 
@@ -186,6 +187,7 @@ public class FinancialApp {
         }
     }
 
+
     private static void viewReportMenu() {
 
         boolean displayReportMenu = true;
@@ -196,11 +198,12 @@ public class FinancialApp {
             System.out.println("Press 2 to Display Previous Month");
             System.out.println("Press 3 to Display Year to Date");
             System.out.println("Press 4 to Search by Vendor");
-            System.out.println("\nPress Enter to Return to Main Menu");
+            System.out.println("\nPress Enter to Return to Ledger Menu");
 
             String selectMenuOption = input.nextLine();
 
             switch (selectMenuOption) {
+
                 case "1":
                     displayMonthToDate();
                     break;
@@ -252,7 +255,7 @@ public class FinancialApp {
         System.out.println("\n=== Year to Date ===");
 
         LocalDate firstOfTheYear = LocalDate.now().withDayOfYear(1).minusYears(1);
-        LocalDate currentDate = LocalDate.now();
+        LocalDate currentDate = LocalDate.now().plusDays(1);
 
         for (LedgerEntry entry : ledgerEntries) {
             boolean withinTimeframe = entry.date.isAfter(firstOfTheYear) && entry.date.isBefore(currentDate);
@@ -280,8 +283,9 @@ public class FinancialApp {
 
     }
 
-    private static void promptReturnToMainMenu() {
-        System.out.println("\nPress Enter to Return to the Main Menu.");
+
+    private static void promptReturnToPreviousMenu() {
+        System.out.println("\nPress Enter to Return to the Previous Menu.");
         input.nextLine();
     }
 
