@@ -198,6 +198,7 @@ public class FinancialApp {
             System.out.println("Press 2 to Display Previous Month");
             System.out.println("Press 3 to Display Year to Date");
             System.out.println("Press 4 to Search by Vendor");
+            System.out.println("Press 5 to Create a Custom Search");
             System.out.println("\nPress Enter to Return to Ledger Menu");
 
             String selectMenuOption = input.nextLine();
@@ -215,6 +216,9 @@ public class FinancialApp {
                     break;
                 case "4":
                     searchByVendor();
+                    break;
+                case "5":
+                    customSearch();
                     break;
                 case "":
                     displayReportMenu = false;
@@ -281,6 +285,47 @@ public class FinancialApp {
             System.out.println("No transaction found for: " + searchEntry);
         }
 
+    }
+    public static void customSearch() {
+        System.out.println("Enter Start Date (yyyy-MM-dd): ");
+        String startInput = input.nextLine();
+        LocalDate startDate = startInput.isBlank() ? null : LocalDate.parse(startInput);
+
+        System.out.println("Enter End Date (yyyy-MM-dd): ");
+        String endInput = input.nextLine();
+        LocalDate endDate = endInput.isBlank() ? null : LocalDate.parse(endInput);
+
+        System.out.println("Enter Description: ");
+        String descriptionInput = input.nextLine();
+        String description = descriptionInput.isBlank() ? null : descriptionInput.toLowerCase();
+
+        System.out.println("Enter Vendor Name: ");
+        String vendorInput = input.nextLine();
+        String vendor = vendorInput.isBlank() ? null : vendorInput.toLowerCase();
+
+        System.out.println("Enter Amount: ");
+        String amountInput = input.nextLine();
+        Double amount = amountInput.isBlank() ? null : Double.parseDouble(amountInput);
+
+        boolean found = false;
+
+        for (LedgerEntry entry : ledgerEntries) {
+            boolean match = true;
+
+            if (startDate != null && entry.date.isBefore(startDate)) match = false;
+            if (endDate != null && entry.date.isAfter(endDate)) match = false;
+            if (description != null && !entry.getDescription().toLowerCase().contains(description)) match = false;
+            if (vendor != null && !entry.getVendor().toLowerCase().contains(vendor)) match = false;
+            if (amount !=  null && entry.getAmount() != amount) match = false;
+
+            if (match) {
+                System.out.println(entry.display());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No transactions found.");
+        }
     }
 
 
